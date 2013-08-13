@@ -18,9 +18,17 @@ public class GenericFeedCrawler extends AbstractFeedCrawler
 
 	protected void processSyndEntry(SyndEntry syndEntry)
 	{
+		String feedKey = syndEntry.getLink() + ":" + syndEntry.getTitle();
+
+		if (feedRepository.exists(feedKey))
+		{
+			log.info("Feed item already exists: {}", feedKey);
+			return;
+		}
+		
 		FeedItem item = new FeedItemImpl();
 		
-		item.setKey(syndEntry.getLink() + ":" + syndEntry.getTitle());
+		item.setKey(feedKey);
 
 		item.setTitle(syndEntry.getTitle());
 		item.setDate(syndEntry.getPublishedDate());

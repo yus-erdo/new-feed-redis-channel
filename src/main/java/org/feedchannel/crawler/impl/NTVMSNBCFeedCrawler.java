@@ -1,11 +1,14 @@
 package org.feedchannel.crawler.impl;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-
 import org.feedchannel.repository.FeedItem;
 import org.feedchannel.repository.impl.FeedItemImpl;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,30 +22,57 @@ public class NTVMSNBCFeedCrawler extends AbstractFeedCrawler
 	@Override
 	protected void processSyndEntry(SyndEntry syndEntry)
 	{
+		String feedKey = syndEntry.getLink() + ":" + syndEntry.getTitle();
+
 		FeedItem item = new FeedItemImpl();
-		
-		item.setKey(syndEntry.getLink() + ":" + syndEntry.getTitle());
-		
+
+		item.setKey(feedKey);
+
 		item.setTitle(syndEntry.getTitle());
 		item.setDate(syndEntry.getPublishedDate());
-		
+
 		try
 		{
 			item.setLink(new URL(syndEntry.getLink()));
 		}
 		catch (MalformedURLException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Link is not valid.", e);
+			return;
 		}
-		//item.setRelatedMediaUrl(url);
-		//item.setSource(source);
-		//item.setSummary(summary);
+
+		Document doc = null;
+		try
+		{
+			doc = Jsoup.connect(syndEntry.getLink()).get();
+		}
+		catch (IOException e)
+		{
+			log.error("Connection problem.", e);
+			return;
+		}
+
+		Elements photo = doc.select("#linkImgRelatedPhotos img");
+
+		if (photo != null)
+		{
+			log.info("Photo element: {}", photo.toString());
+
+			try
+			{
+				item.setRelatedMediaUrl(new URL(photo.attr("src")));
+			}
+			catch (MalformedURLException e)
+			{
+				log.error("Link is not valid.", e);
+				return;
+			}
+		}
+
+		// item.setSource(source);
+		// item.setSummary(summary);
 		item.setDescription(syndEntry.getDescription().getValue());
-		
+
 		feedRepository.save(item);
 	}
-	
-
-
 }

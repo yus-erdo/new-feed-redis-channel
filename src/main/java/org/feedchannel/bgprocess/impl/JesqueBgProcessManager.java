@@ -46,11 +46,12 @@ public class JesqueBgProcessManager implements BackgroundProcessManager
 		public void onEvent(WorkerEvent event, Worker worker, String queue,
 				Job job, Object runner, Object result, Exception ex)
 		{
-			log.info("onEvent: {} {} {}", event, runner, result);
+			log.info("onEvent: {} {} {} {} {} {} {} {}", event, worker, queue,
+					job, runner, runner, result, ex);
 
 			try
 			{
-				Thread.sleep(interval);
+				Thread.sleep(getInterval());
 			}
 			catch (InterruptedException e)
 			{
@@ -102,6 +103,23 @@ public class JesqueBgProcessManager implements BackgroundProcessManager
 		jesqueClient.enqueue(FEED_CRAWLER_JOB_QID, job);
 
 		log.info("Enqued: {} {}", feedUri, this);
+	}
+
+	/**
+	 * @return the interval
+	 */
+	public int getInterval()
+	{
+		return interval;
+	}
+
+	/**
+	 * @param interval
+	 *            the interval to set
+	 */
+	public void setInterval(int interval)
+	{
+		this.interval = interval;
 	}
 
 	private class FeedUriClassTuple

@@ -6,6 +6,7 @@ package org.feedchannel.crawler.impl;
 import java.net.URL;
 import java.util.Queue;
 
+import org.feedchannel.JedisKeys;
 import org.feedchannel.crawler.FeedCrawler;
 import org.feedchannel.repository.FeedItem;
 import org.feedchannel.repository.FeedRepository;
@@ -17,7 +18,6 @@ import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.XmlReader;
 
-
 /**
  * @author yusufe
  * 
@@ -28,7 +28,7 @@ public abstract class AbstractFeedCrawler implements FeedCrawler
 			.getLogger(AbstractFeedCrawler.class);
 
 	private String feedUri;
-	
+
 	protected FeedRepository feedRepository;
 
 	/*
@@ -47,9 +47,20 @@ public abstract class AbstractFeedCrawler implements FeedCrawler
 				reader = new XmlReader(new URL(feedUri));
 				SyndFeed feed = new SyndFeedInput().build(reader);
 
-				for (Object syndEntry : feed.getEntries())
+				for (Object syndEntryObj : feed.getEntries())
 				{
-					processSyndEntry((SyndEntry)syndEntry);
+					SyndEntry syndEntry = (SyndEntry) syndEntryObj;
+
+					String feedKey = getFeedKey(syndEntry);
+
+					if (!feedRepository.exists(feedKey))
+					{
+						processSyndEntry(syndEntry);
+					}
+					else
+					{
+						log.info("Feed item already exists: {}", feedKey);
+					}
 				}
 
 			}
@@ -66,7 +77,13 @@ public abstract class AbstractFeedCrawler implements FeedCrawler
 			log.warn("Something wrong with crawler for: " + feedUri, e);
 		}
 	}
-	
+
+	protected String getFeedKey(SyndEntry syndEntry)
+	{
+		return JedisKeys.FEED_KEY + syndEntry.getLink()
+				+ ":" + syndEntry.getTitle();
+	}
+
 	protected abstract void processSyndEntry(SyndEntry syndEntry);
 
 	/*

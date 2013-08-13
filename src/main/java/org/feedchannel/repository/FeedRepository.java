@@ -14,4 +14,6 @@ public interface FeedRepository
 	void reset();
 	
 	void setNewFeedItemEventListener(NewFeedItemEventListener newFeedItemEventListener);
+
+	boolean exists(String feedKey);
 }

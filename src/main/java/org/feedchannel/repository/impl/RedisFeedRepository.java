@@ -1,6 +1,5 @@
 package org.feedchannel.repository.impl;
 
-
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +40,19 @@ public class RedisFeedRepository implements FeedRepository
 		}
 	}
 
+	public boolean exists(String feedKey)
+	{
+		Jedis jedis = jedisPool.getResource();
+		try
+		{
+			return jedis.hget(JedisKeys.FEED_HASH, feedKey) == null;
+		}
+		finally
+		{
+			jedisPool.returnResource(jedis);
+		}
+	}
+
 	public void save(FeedItem feedItem)
 	{
 		Jedis jedis = jedisPool.getResource();
@@ -48,19 +60,13 @@ public class RedisFeedRepository implements FeedRepository
 		{
 			String feedKey = JedisKeys.FEED_KEY + feedItem.getKey();
 
-			if (jedis.hget(JedisKeys.FEED_HASH, feedKey) == null)
+			jedis.hset(JedisKeys.FEED_HASH, feedKey, feedItem.toJSON());
+			log.info("FeedItem saved. Key = {}", feedKey);
+
+			if (newFeedItemEventListener != null)
 			{
-				jedis.hset(JedisKeys.FEED_HASH, feedKey, feedItem.toJSON());
-				log.info("FeedItem saved. Key = {}", feedKey);
-				if (newFeedItemEventListener != null)
-				{
-					newFeedItemEventListener.onNewFeedItem(feedItem);
-					jedis.publish(JedisKeys.NEW_FEED_CHANNEL, feedItem.toJSON());
-				}
-			}
-			else
-			{
-				log.info("FeedItem already exists. Key = {}", feedKey);
+				newFeedItemEventListener.onNewFeedItem(feedItem);
+				jedis.publish(JedisKeys.NEW_FEED_CHANNEL, feedItem.toJSON());
 			}
 		}
 		finally
