@@ -3,13 +3,16 @@
  */
 package org.feedchannel.crawler.impl;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Queue;
 
 import org.feedchannel.JedisKeys;
 import org.feedchannel.crawler.FeedCrawler;
+import org.feedchannel.exception.CrawlerException;
 import org.feedchannel.repository.FeedItem;
 import org.feedchannel.repository.FeedRepository;
+import org.feedchannel.repository.impl.FeedItemImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,15 +54,15 @@ public abstract class AbstractFeedCrawler implements FeedCrawler
 				{
 					SyndEntry syndEntry = (SyndEntry) syndEntryObj;
 
-					String feedKey = getFeedKey(syndEntry);
+					FeedItem feedItem = newFeedItemWithKey(syndEntry);
 
-					if (!feedRepository.exists(feedKey))
+					if (!feedRepository.exists(feedItem))
 					{
 						processSyndEntry(syndEntry);
 					}
 					else
 					{
-						log.info("Feed item already exists: {}", feedKey);
+						log.info("Feed item already exists: {}", feedItem.getKey());
 					}
 				}
 
@@ -80,11 +83,33 @@ public abstract class AbstractFeedCrawler implements FeedCrawler
 
 	protected String getFeedKey(SyndEntry syndEntry)
 	{
-		return JedisKeys.FEED_KEY + syndEntry.getLink()
-				+ ":" + syndEntry.getTitle();
+		return JedisKeys.FEED_KEY + syndEntry.getLink();
 	}
 
-	protected abstract void processSyndEntry(SyndEntry syndEntry);
+	protected abstract void processSyndEntry(SyndEntry syndEntry) throws CrawlerException;
+	
+	public FeedItem newFeedItemWithKey(SyndEntry syndEntry)
+			throws CrawlerException
+	{
+		URL url = null;
+
+		try
+		{
+			url = new URL(syndEntry.getLink());
+		}
+		catch (MalformedURLException e)
+		{
+			log.info("Feed doesn't have a valid link: {}", syndEntry.getLink());
+			throw new CrawlerException(e);
+		}
+
+		FeedItem feedItem = new FeedItemImpl();
+
+		feedItem.setLink(url);
+
+		feedItem.setKey(syndEntry.getLink());
+		return feedItem;
+	}
 
 	/*
 	 * (non-Javadoc)

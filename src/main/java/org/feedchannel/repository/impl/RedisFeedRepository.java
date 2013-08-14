@@ -40,12 +40,14 @@ public class RedisFeedRepository implements FeedRepository
 		}
 	}
 
-	public boolean exists(String feedKey)
+	public boolean exists(FeedItem feedItem)
 	{
+		String feedKey = getRedisFeedKey(feedItem);
+
 		Jedis jedis = jedisPool.getResource();
 		try
 		{
-			return jedis.hget(JedisKeys.FEED_HASH, feedKey) == null;
+			return jedis.hget(JedisKeys.FEED_HASH, feedKey) != null;
 		}
 		finally
 		{
@@ -58,7 +60,7 @@ public class RedisFeedRepository implements FeedRepository
 		Jedis jedis = jedisPool.getResource();
 		try
 		{
-			String feedKey = JedisKeys.FEED_KEY + feedItem.getKey();
+			String feedKey = getRedisFeedKey(feedItem);
 
 			jedis.hset(JedisKeys.FEED_HASH, feedKey, feedItem.toJSON());
 			log.info("FeedItem saved. Key = {}", feedKey);
@@ -73,6 +75,11 @@ public class RedisFeedRepository implements FeedRepository
 		{
 			jedisPool.returnResource(jedis);
 		}
+	}
+
+	private String getRedisFeedKey(FeedItem feedItem)
+	{
+		return JedisKeys.FEED_KEY + feedItem.getKey();
 	}
 
 	public void setNewFeedItemEventListener(

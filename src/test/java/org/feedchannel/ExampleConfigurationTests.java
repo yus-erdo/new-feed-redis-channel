@@ -1,9 +1,13 @@
 package org.feedchannel;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-
-import org.feedchannel.crawler.FeedCrawlerTask;
+import org.feedchannel.repository.FeedItem;
+import org.feedchannel.repository.FeedRepository;
+import org.feedchannel.repository.impl.FeedItemImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +16,40 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @ContextConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
-public class ExampleConfigurationTests {
-	
+public class ExampleConfigurationTests
+{
+
 	@Autowired
-	private FeedCrawlerTask service;
+	private FeedCrawlerService feedCrawlerService;
+
+	@Autowired
+	private FeedRepository redisFeedRepository;
 
 	@Test
-	public void testSimpleProperties() throws Exception {
-		assertNotNull(service);
+	public void testWiring() throws Exception 
+	{
+		assertNotNull(feedCrawlerService);
+
+		assertNotNull(redisFeedRepository);
 	}
-	
+
+	@Test
+	public void testSimpleProperties() throws Exception
+	{
+		FeedItem feedItem = new FeedItemImpl();
+		
+		feedItem.setKey("feed_key");
+		
+		assertEquals("feed_key", feedItem.getKey());
+		
+		redisFeedRepository.reset();
+		
+		assertFalse(redisFeedRepository.exists(feedItem));
+		
+		redisFeedRepository.save(feedItem);
+		
+		assertTrue(redisFeedRepository.exists(feedItem));
+
+	}
+
 }

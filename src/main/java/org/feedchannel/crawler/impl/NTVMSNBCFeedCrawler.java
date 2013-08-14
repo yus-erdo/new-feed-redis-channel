@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.feedchannel.exception.CrawlerException;
 import org.feedchannel.repository.FeedItem;
-import org.feedchannel.repository.impl.FeedItemImpl;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -21,25 +21,17 @@ public class NTVMSNBCFeedCrawler extends AbstractFeedCrawler
 
 	@Override
 	protected void processSyndEntry(SyndEntry syndEntry)
+			throws CrawlerException
 	{
-		String feedKey = syndEntry.getLink() + ":" + syndEntry.getTitle();
+		FeedItem feedItem = newFeedItemWithKey(syndEntry);
 
-		FeedItem item = new FeedItemImpl();
+		feedItem.setTitle(syndEntry.getTitle());
+		feedItem.setDate(syndEntry.getPublishedDate());
 
-		item.setKey(feedKey);
-
-		item.setTitle(syndEntry.getTitle());
-		item.setDate(syndEntry.getPublishedDate());
-
-		try
-		{
-			item.setLink(new URL(syndEntry.getLink()));
-		}
-		catch (MalformedURLException e)
-		{
-			log.error("Link is not valid.", e);
-			return;
-		}
+		// item.setRelatedMediaUrl(url);
+		// item.setSource(source);
+		// item.setSummary(summary);
+		feedItem.setDescription(syndEntry.getDescription().getValue());
 
 		Document doc = null;
 		try
@@ -60,7 +52,7 @@ public class NTVMSNBCFeedCrawler extends AbstractFeedCrawler
 
 			try
 			{
-				item.setRelatedMediaUrl(new URL(photo.attr("src")));
+				feedItem.setRelatedMediaUrl(new URL(photo.attr("src")));
 			}
 			catch (MalformedURLException e)
 			{
@@ -69,10 +61,6 @@ public class NTVMSNBCFeedCrawler extends AbstractFeedCrawler
 			}
 		}
 
-		// item.setSource(source);
-		// item.setSummary(summary);
-		item.setDescription(syndEntry.getDescription().getValue());
-
-		feedRepository.save(item);
+		feedRepository.save(feedItem);
 	}
 }

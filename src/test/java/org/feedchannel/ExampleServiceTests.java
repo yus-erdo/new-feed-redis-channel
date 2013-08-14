@@ -1,15 +1,16 @@
 package org.feedchannel;
 
-import org.feedchannel.FeedCrawlerService;
-
 import junit.framework.TestCase;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class ExampleServiceTests extends TestCase {
 
-	private FeedCrawlerService service = new FeedCrawlerService();
+	@Autowired
+	private FeedCrawlerService feedCrawlerService;
 	
 	public void testReadOnce() throws Exception {
-		
+		assertNotNull(feedCrawlerService);
 	}
 
 }
