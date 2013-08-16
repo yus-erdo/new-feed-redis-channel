@@ -3,15 +3,15 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.springframework.samples.spring</groupId>
-	<artifactId>spring-utility</artifactId>
+	<groupId>org.feedchannel</groupId>
+	<artifactId>new-feed-redis-channel</artifactId>
 	<version>1.0.0.CI-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>Spring Utility</name>
-	<url>http://www.springframework.org</url>
+	<name>New Feed Redis Channel</name>
+	<url>https://github.com/erdogany/new-feed-redis-channel</url>
 	<description>
 		<![CDATA[
-      This project is a minimal jar utility with Spring configuration.
+      A simple yet powerful crawler service that uses Redis to save and publish new feed items from given RSS/ATOM URIs. 
     ]]>
 	</description>
 	<properties>
@@ -36,6 +36,7 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>${spring.framework.version}</version>
+			<scope></scope>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -87,17 +88,43 @@
 		</dependency>
 	</dependencies>
 
-	<!-- <build> -->
-	<!-- <plugins> -->
-	<!-- <plugin> -->
-	<!-- <groupId>org.apache.maven.plugins</groupId> -->
-	<!-- <artifactId>maven-compiler-plugin</artifactId> -->
-	<!-- <configuration> -->
-	<!-- <source>1.5</source> -->
-	<!-- <target>1.5</target> -->
-	<!-- </configuration> -->
-	<!-- </plugin> -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>org.feedchannel.FeedCrawlerService</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>org.feedchannel.FeedCrawlerService</mainClass>
+						</manifest>
+					</archive>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id> <!-- this is used for inheritance merges -->
+						<phase>package</phase> <!-- bind to the packaging phase -->
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
-	<!-- </plugins> -->
-	<!-- </build> -->
+
 </project>

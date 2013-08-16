@@ -46,7 +46,7 @@ public class JesqueBgProcessManager implements BackgroundProcessManager
 				Job job, Object runner, Object result, Exception ex)
 		{
 			log.info("onEvent: {} {} {} {} {} {} {} {}", event, worker, queue,
-					job, runner, runner, result, ex.getStackTrace());
+					job, runner, runner, result, ex);
 
 			try
 			{
