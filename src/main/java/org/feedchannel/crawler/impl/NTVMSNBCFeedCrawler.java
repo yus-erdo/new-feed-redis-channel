@@ -20,47 +20,50 @@ public class NTVMSNBCFeedCrawler extends AbstractFeedCrawler
 			.getLogger(NTVMSNBCFeedCrawler.class);
 
 	@Override
-	protected void processSyndEntry(SyndEntry syndEntry)
+	protected void processSyndEntry(FeedItem feedItem, SyndEntry syndEntry)
 			throws CrawlerException
 	{
-		FeedItem feedItem = newFeedItemWithKey(syndEntry);
-
-		feedItem.setTitle(syndEntry.getTitle());
-		feedItem.setDate(syndEntry.getPublishedDate());
-
-		// item.setRelatedMediaUrl(url);
-		// item.setSource(source);
-		// item.setSummary(summary);
-		feedItem.setDescription(syndEntry.getDescription().getValue());
-
-		Document doc = null;
 		try
 		{
-			doc = Jsoup.connect(syndEntry.getLink()).get();
-		}
-		catch (IOException e)
-		{
-			log.error("Connection problem.", e);
-			return;
-		}
+			feedItem.setTitle(syndEntry.getTitle());
+			feedItem.setDate(syndEntry.getPublishedDate());
 
-		Elements photo = doc.select("#linkImgRelatedPhotos img");
+			// item.setRelatedMediaUrl(url);
+			// item.setSource(source);
+			// item.setSummary(summary);
+			feedItem.setDescription(syndEntry.getDescription().getValue());
 
-		if (photo != null)
-		{
-			log.info("Photo element: {}", photo.toString());
-
+			Document doc = null;
 			try
 			{
-				feedItem.setRelatedMediaUrl(new URL(photo.attr("src")));
+				doc = Jsoup.connect(syndEntry.getLink()).get();
 			}
-			catch (MalformedURLException e)
+			catch (IOException e)
 			{
-				log.error("Link is not valid.", e);
+				log.error("Connection problem.", e);
 				return;
 			}
-		}
 
-		feedRepository.save(feedItem);
+			Elements photo = doc.select("#linkImgRelatedPhotos img");
+
+			if (photo != null)
+			{
+				log.info("Photo element: {}", photo.toString());
+
+				try
+				{
+					feedItem.setRelatedMediaUrl(new URL(photo.attr("src")));
+				}
+				catch (MalformedURLException e)
+				{
+					log.error("Link is not valid.", e);
+					return;
+				}
+			}
+		}
+		finally
+		{
+			feedRepository.save(feedItem);
+		}
 	}
 }

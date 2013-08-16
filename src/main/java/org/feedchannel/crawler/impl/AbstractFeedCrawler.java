@@ -58,7 +58,7 @@ public abstract class AbstractFeedCrawler implements FeedCrawler
 
 					if (!feedRepository.exists(feedItem))
 					{
-						processSyndEntry(syndEntry);
+						processSyndEntry(feedItem, syndEntry);
 					}
 					else
 					{
@@ -86,11 +86,14 @@ public abstract class AbstractFeedCrawler implements FeedCrawler
 		return JedisKeys.FEED_KEY + syndEntry.getLink();
 	}
 
-	protected abstract void processSyndEntry(SyndEntry syndEntry) throws CrawlerException;
+	protected abstract void processSyndEntry(FeedItem feedItem, SyndEntry syndEntry) throws CrawlerException;
 	
 	public FeedItem newFeedItemWithKey(SyndEntry syndEntry)
 			throws CrawlerException
 	{
+		
+		log.info("newFeedItemWithKey(): create new FeedItem: {}", syndEntry.getLink());
+		
 		URL url = null;
 
 		try

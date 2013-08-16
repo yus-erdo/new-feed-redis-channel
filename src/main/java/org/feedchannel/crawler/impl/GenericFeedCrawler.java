@@ -12,11 +12,9 @@ public class GenericFeedCrawler extends AbstractFeedCrawler
 	private static final Logger log = LoggerFactory
 			.getLogger(GenericFeedCrawler.class);
 
-	protected void processSyndEntry(SyndEntry syndEntry)
+	protected void processSyndEntry(FeedItem feedItem, SyndEntry syndEntry)
 			throws CrawlerException
 	{
-		FeedItem feedItem = newFeedItemWithKey(syndEntry);
-
 		feedItem.setTitle(syndEntry.getTitle());
 		feedItem.setDate(syndEntry.getPublishedDate());
 

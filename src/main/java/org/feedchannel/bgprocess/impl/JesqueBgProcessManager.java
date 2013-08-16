@@ -81,8 +81,6 @@ public class JesqueBgProcessManager implements BackgroundProcessManager
 						FeedCrawlerTask.class.getCanonicalName(),
 						FeedCrawlerTask.class)));
 
-		worker.addListener(LoggingWorkerListener.INSTANCE);
-
 		worker.addListener(listener, WorkerEvent.JOB_SUCCESS,
 				WorkerEvent.JOB_FAILURE);
 
