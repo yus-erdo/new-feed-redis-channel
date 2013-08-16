@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-@Repository
+@Repository("feedRepository")
 public class RedisFeedRepository implements FeedRepository
 {
 	private static final Logger log = LoggerFactory

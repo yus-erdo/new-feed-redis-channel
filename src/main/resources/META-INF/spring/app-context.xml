@@ -6,11 +6,6 @@
 
 	<context:component-scan base-package="org.feedchannel,org.feedchannel.repository" />
 
-	<bean id="bgProcessManager" class="org.feedchannel.bgprocess.impl.JesqueBgProcessManager">
-		<constructor-arg ref="jesqueConfig" />
-		<property name="interval" value="5000" />
-	</bean>
-
 	<bean id="jedisConfig" class="redis.clients.jedis.JedisPoolConfig">
 		<property name="testWhileIdle" value="true" />
 	</bean>
@@ -30,8 +25,6 @@
 		<constructor-arg ref="jedisPool" />
 	</bean>
 
-	<bean id="feedRepository" class="org.feedchannel.repository.impl.RedisFeedRepository" />
-	
 	<bean id="feedURiToClassMapInit"
 		class="org.feedchannel.repository.initializer.FeedUriToClassMapInitializer">
 		<property name="feedUriToClassMap">
@@ -41,8 +34,5 @@
 			</map>
 		</property>
 	</bean>
-
-	<bean id="feedCrawlerService" class="org.feedchannel.FeedCrawlerService"
-		depends-on="feedURiToClassMapInit" />
 
 </beans>

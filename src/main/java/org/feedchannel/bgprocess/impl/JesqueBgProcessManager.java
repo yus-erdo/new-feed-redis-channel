@@ -10,7 +10,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import net.greghaines.jesque.Config;
 import net.greghaines.jesque.Job;
 import net.greghaines.jesque.client.Client;
-import net.greghaines.jesque.worker.LoggingWorkerListener;
 import net.greghaines.jesque.worker.Worker;
 import net.greghaines.jesque.worker.WorkerEvent;
 import net.greghaines.jesque.worker.WorkerImpl;
@@ -47,7 +46,7 @@ public class JesqueBgProcessManager implements BackgroundProcessManager
 				Job job, Object runner, Object result, Exception ex)
 		{
 			log.info("onEvent: {} {} {} {} {} {} {} {}", event, worker, queue,
-					job, runner, runner, result, ex);
+					job, runner, runner, result, ex.getStackTrace());
 
 			try
 			{
