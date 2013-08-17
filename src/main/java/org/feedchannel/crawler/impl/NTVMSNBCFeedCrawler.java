@@ -3,6 +3,7 @@ package org.feedchannel.crawler.impl;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 
 import org.feedchannel.exception.CrawlerException;
 import org.feedchannel.repository.FeedItem;
@@ -26,9 +27,11 @@ public class NTVMSNBCFeedCrawler extends AbstractFeedCrawler
 		try
 		{
 			feedItem.setTitle(syndEntry.getTitle());
-			feedItem.setDate(syndEntry.getPublishedDate());
 
-			// item.setRelatedMediaUrl(url);
+			feedItem.setPublishDate(syndEntry.getPublishedDate());
+			feedItem.setUpdateDate(syndEntry.getUpdatedDate());
+			feedItem.setReceiveDate(new Date());
+			
 			// item.setSource(source);
 			// item.setSummary(summary);
 			feedItem.setDescription(syndEntry.getDescription().getValue());

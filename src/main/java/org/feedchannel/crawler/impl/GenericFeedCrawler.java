@@ -1,5 +1,7 @@
 package org.feedchannel.crawler.impl;
 
+import java.util.Date;
+
 import org.feedchannel.exception.CrawlerException;
 import org.feedchannel.repository.FeedItem;
 import org.slf4j.Logger;
@@ -16,7 +18,10 @@ public class GenericFeedCrawler extends AbstractFeedCrawler
 			throws CrawlerException
 	{
 		feedItem.setTitle(syndEntry.getTitle());
-		feedItem.setDate(syndEntry.getPublishedDate());
+		
+		feedItem.setPublishDate(syndEntry.getPublishedDate());
+		feedItem.setUpdateDate(syndEntry.getUpdatedDate());
+		feedItem.setReceiveDate(new Date());
 
 		// item.setRelatedMediaUrl(url);
 		// item.setSource(source);

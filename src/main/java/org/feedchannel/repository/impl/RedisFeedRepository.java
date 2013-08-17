@@ -1,5 +1,6 @@
 package org.feedchannel.repository.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -61,7 +62,7 @@ public class RedisFeedRepository implements FeedRepository
 		try
 		{
 			String feedKey = getRedisFeedKey(feedItem);
-
+			
 			jedis.hset(JedisKeys.FEED_HASH, feedKey, feedItem.toJSON());
 			log.info("FeedItem saved. Key = {}", feedKey);
 

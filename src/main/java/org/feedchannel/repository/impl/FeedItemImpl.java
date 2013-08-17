@@ -3,7 +3,6 @@
  */
 package org.feedchannel.repository.impl;
 
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
@@ -20,7 +19,11 @@ import org.feedchannel.repository.FeedItem;
  */
 public class FeedItemImpl implements FeedItem
 {
-	private Date date;
+	private Date receiveDate;
+
+	private Date publishDate;
+
+	private Date updateDate;
 
 	private String description;
 
@@ -41,9 +44,9 @@ public class FeedItemImpl implements FeedItem
 	 * 
 	 * @see io.nabz.feedcrawler.repository.FeedItem#getDate()
 	 */
-	public Date getDate()
+	public Date getReceiveDate()
 	{
-		return date;
+		return receiveDate;
 	}
 
 	/*
@@ -111,9 +114,9 @@ public class FeedItemImpl implements FeedItem
 	 * 
 	 * @see io.nabz.feedcrawler.repository.FeedItem#setDate(java.util.Date)
 	 */
-	public void setDate(Date date)
+	public void setReceiveDate(Date date)
 	{
-		this.date = date;
+		this.receiveDate = date;
 	}
 
 	/*
@@ -129,6 +132,7 @@ public class FeedItemImpl implements FeedItem
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see io.nabz.feedcrawler.repository.FeedItem#setKey(java.lang.String)
 	 */
 	public void setKey(String id)
@@ -228,6 +232,26 @@ public class FeedItemImpl implements FeedItem
 	public String toString()
 	{
 		return new ToStringBuilder(this).append(title).append(link)
-				.append(date).build();
+				.append(receiveDate).build();
+	}
+
+	public Date getPublishDate()
+	{
+		return publishDate;
+	}
+
+	public Date getUpdateDate()
+	{
+		return updateDate;
+	}
+
+	public void setPublishDate(Date date)
+	{
+		this.publishDate = date;
+	}
+
+	public void setUpdateDate(Date date)
+	{
+		this.updateDate = date;
 	}
 }
