@@ -4,8 +4,9 @@ package org.feedchannel.crawler;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.feedchannel.JedisKeys;
+import org.feedchannel.RedisKeys;
 import org.feedchannel.crawler.impl.GenericFeedCrawler;
+import org.feedchannel.repository.FeedRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class FeedCrawlerFactory
 
 	@Autowired
 	private JedisPool jedisPool;
+	
+	@Autowired
+	private FeedRepository feedRepository;
 
 	private Map<String, String> feedUriToClassMap = null;
 
@@ -60,6 +64,7 @@ public class FeedCrawlerFactory
 		}
 
 		feedCrawler.setFeedURI(feedUri);
+		feedCrawler.setFeedRepository(feedRepository);
 
 		log.info("FeedCrawler created: {}", feedCrawler.toString());
 		return feedCrawler;
@@ -101,7 +106,7 @@ public class FeedCrawlerFactory
 		try
 		{
 			feedUriToClassMap = jedis
-					.hgetAll(JedisKeys.FEED_URI_TO_CLASS_MAP_KEY);
+					.hgetAll(RedisKeys.FEED_URI_TO_CLASS_MAP_KEY);
 		}
 		finally
 		{

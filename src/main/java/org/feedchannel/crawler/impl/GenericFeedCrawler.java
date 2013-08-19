@@ -17,17 +17,22 @@ public class GenericFeedCrawler extends AbstractFeedCrawler
 	protected void processSyndEntry(FeedItem feedItem, SyndEntry syndEntry)
 			throws CrawlerException
 	{
-		feedItem.setTitle(syndEntry.getTitle());
-		
-		feedItem.setPublishDate(syndEntry.getPublishedDate());
-		feedItem.setUpdateDate(syndEntry.getUpdatedDate());
-		feedItem.setReceiveDate(new Date());
+		try
+		{
+			feedItem.setTitle(syndEntry.getTitle());
 
-		// item.setRelatedMediaUrl(url);
-		// item.setSource(source);
-		// item.setSummary(summary);
-		feedItem.setDescription(syndEntry.getDescription().getValue());
+			feedItem.setPublishDate(syndEntry.getPublishedDate());
+			feedItem.setUpdateDate(syndEntry.getUpdatedDate());
+			feedItem.setReceiveDate(new Date());
 
-		feedRepository.save(feedItem);
+			// item.setRelatedMediaUrl(url);
+			// item.setSource(source);
+			// item.setSummary(summary);
+			feedItem.setDescription(syndEntry.getDescription().getValue());
+		}
+		finally
+		{
+			feedRepository.save(feedItem);
+		}
 	}
 }

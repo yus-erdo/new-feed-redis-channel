@@ -1,4 +1,4 @@
-package org.feedchannel;
+	package org.feedchannel;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

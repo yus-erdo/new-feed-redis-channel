@@ -3,7 +3,7 @@ package org.feedchannel.repository.initializer;
 
 import java.util.Map;
 
-import org.feedchannel.JedisKeys;
+import org.feedchannel.RedisKeys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +28,10 @@ public class FeedUriToClassMapInitializer
 		{
 			for (Map.Entry<String, String> entry : feedUriToClassMap.entrySet())
 			{
-				jedis.hset(JedisKeys.FEED_URI_TO_CLASS_MAP_KEY, entry.getKey(),
+				jedis.hset(RedisKeys.FEED_URI_TO_CLASS_MAP_KEY, entry.getKey(),
 						entry.getValue());
 				log.info("FeedUriToClassMap entry added: {} : {} =>  {}",
-						JedisKeys.FEED_URI_TO_CLASS_MAP_KEY, entry.getKey(),
+						RedisKeys.FEED_URI_TO_CLASS_MAP_KEY, entry.getKey(),
 						entry.getValue());
 			}
 		}

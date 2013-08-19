@@ -16,4 +16,8 @@ public interface FeedRepository
 	void setNewFeedItemEventListener(NewFeedItemEventListener newFeedItemEventListener);
 
 	boolean exists(FeedItem feedItem);
+
+	void pushFeedUri(String... feedUri);
+
+	String popFeedUri();
 }

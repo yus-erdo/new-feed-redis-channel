@@ -1,20 +1,15 @@
 package org.feedchannel;
 
-import org.feedchannel.bgprocess.BackgroundProcessManager;
-import org.feedchannel.crawler.FeedCrawlerTask;
 import org.feedchannel.repository.FeedItem;
 import org.feedchannel.repository.FeedRepository;
 import org.feedchannel.repository.NewFeedItemEventListener;
+import org.feedchannel.scheduling.Scheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
-
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPubSub;
 
 /**
  * {@link FeedCrawlerTask} with hard-coded input data.
@@ -29,11 +24,11 @@ public class FeedCrawlerService
 	private FeedRepository feedRepository;
 
 	@Autowired
-	private BackgroundProcessManager bgProcessManager;
+	private Scheduler scheduler;
 
-	public void enqueueFeedUri(String feedUri)
+	public void pushFeedUri(String feedUri)
 	{
-		bgProcessManager.enqueue(feedUri, FeedCrawlerTask.class);
+		feedRepository.pushFeedUri(feedUri);
 	}
 
 	public void setNewFeedItemEventListener(
@@ -45,6 +40,11 @@ public class FeedCrawlerService
 	public void reset()
 	{
 		feedRepository.reset();
+	}
+	
+	public void start()
+	{
+		scheduler.start();
 	}
 
 	public static void main(String[] args)
@@ -65,60 +65,12 @@ public class FeedCrawlerService
 
 		fcs.reset();
 
-		fcs.enqueueFeedUri("http://www.ntvmsnbc.com/id/24927412/device/rss/rss.xml");
+		fcs.pushFeedUri("http://www.ntvmsnbc.com/id/24927412/device/rss/rss.xml");
 
-		fcs.enqueueFeedUri("http://www.mackolik.com/Rss");
+		fcs.pushFeedUri("http://www.mackolik.com/Rss");
 
-		JedisPool jp = (JedisPool) ac.getBean("jedisPool");
+		fcs.start();
 		
-		Jedis jedis = jp.getResource();
-		
-		JedisPubSub jedisPubSub = new JedisPubSub()
-		{
-			
-			@Override
-			public void onUnsubscribe(String channel, int subscribedChannels)
-			{
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onSubscribe(String channel, int subscribedChannels)
-			{
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onPUnsubscribe(String pattern, int subscribedChannels)
-			{
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onPSubscribe(String pattern, int subscribedChannels)
-			{
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onPMessage(String pattern, String channel, String message)
-			{
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onMessage(String channel, String message)
-			{
-				log.info("Pub {} {}", channel, message);
-			}
-		};
-		
-		jedis.subscribe(jedisPubSub, JedisKeys.NEW_FEED_CHANNEL);
 	}
 
 }

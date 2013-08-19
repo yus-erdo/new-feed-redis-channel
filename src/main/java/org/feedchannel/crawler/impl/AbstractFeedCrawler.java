@@ -7,7 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Queue;
 
-import org.feedchannel.JedisKeys;
+import org.feedchannel.RedisKeys;
 import org.feedchannel.crawler.FeedCrawler;
 import org.feedchannel.exception.CrawlerException;
 import org.feedchannel.repository.FeedItem;
@@ -83,7 +83,7 @@ public abstract class AbstractFeedCrawler implements FeedCrawler
 
 	protected String getFeedKey(SyndEntry syndEntry)
 	{
-		return JedisKeys.FEED_KEY + syndEntry.getLink();
+		return RedisKeys.FEED_KEY + syndEntry.getLink();
 	}
 
 	protected abstract void processSyndEntry(FeedItem feedItem, SyndEntry syndEntry) throws CrawlerException;

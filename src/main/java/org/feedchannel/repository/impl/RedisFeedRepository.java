@@ -1,10 +1,9 @@
 package org.feedchannel.repository.impl;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.feedchannel.JedisKeys;
+import org.feedchannel.RedisKeys;
 import org.feedchannel.repository.FeedItem;
 import org.feedchannel.repository.FeedRepository;
 import org.feedchannel.repository.NewFeedItemEventListener;
@@ -32,8 +31,33 @@ public class RedisFeedRepository implements FeedRepository
 		Jedis jedis = jedisPool.getResource();
 		try
 		{
-			Long len = jedis.llen(JedisKeys.FEED_URI_SET_KEY);
-			return jedis.lrange(JedisKeys.FEED_URI_SET_KEY, 0, len);
+			return jedis.lrange(RedisKeys.FEED_URI_LIST, 0, -1);
+		}
+		finally
+		{
+			jedisPool.returnResource(jedis);
+		}
+	}
+
+	public void pushFeedUri(String... feedUri)
+	{
+		Jedis jedis = jedisPool.getResource();
+		try
+		{
+			jedis.rpush(RedisKeys.FEED_URI_LIST, feedUri);
+		}
+		finally
+		{
+			jedisPool.returnResource(jedis);
+		}
+	}
+	
+	public String popFeedUri()
+	{
+		Jedis jedis = jedisPool.getResource();
+		try
+		{
+			return jedis.lpop(RedisKeys.FEED_URI_LIST);
 		}
 		finally
 		{
@@ -48,7 +72,7 @@ public class RedisFeedRepository implements FeedRepository
 		Jedis jedis = jedisPool.getResource();
 		try
 		{
-			return jedis.hget(JedisKeys.FEED_HASH, feedKey) != null;
+			return jedis.hget(RedisKeys.FEED_HASH, feedKey) != null;
 		}
 		finally
 		{
@@ -62,14 +86,16 @@ public class RedisFeedRepository implements FeedRepository
 		try
 		{
 			String feedKey = getRedisFeedKey(feedItem);
-			
-			jedis.hset(JedisKeys.FEED_HASH, feedKey, feedItem.toJSON());
-			log.info("FeedItem saved. Key = {}", feedKey);
+			String feedJSON = feedItem.toJSON();
+
+			jedis.hset(RedisKeys.FEED_HASH, feedKey, feedJSON);
+			log.info("FeedItem saved. Feed JSON = {}", feedJSON);
+
+			jedis.publish(RedisKeys.NEW_FEED_CHANNEL, feedJSON);
 
 			if (newFeedItemEventListener != null)
 			{
 				newFeedItemEventListener.onNewFeedItem(feedItem);
-				jedis.publish(JedisKeys.NEW_FEED_CHANNEL, feedItem.toJSON());
 			}
 		}
 		finally
@@ -80,7 +106,7 @@ public class RedisFeedRepository implements FeedRepository
 
 	private String getRedisFeedKey(FeedItem feedItem)
 	{
-		return JedisKeys.FEED_KEY + feedItem.getKey();
+		return RedisKeys.FEED_KEY + feedItem.getKey();
 	}
 
 	public void setNewFeedItemEventListener(
@@ -101,10 +127,10 @@ public class RedisFeedRepository implements FeedRepository
 		try
 		{
 			for (Map.Entry<String, String> entry : jedis.hgetAll(
-					JedisKeys.FEED_HASH).entrySet())
+					RedisKeys.FEED_HASH).entrySet())
 			{
 				log.info("HDEL {}", entry.getKey());
-				jedis.hdel(JedisKeys.FEED_HASH, entry.getKey());
+				jedis.hdel(RedisKeys.FEED_HASH, entry.getKey());
 			}
 		}
 		finally
