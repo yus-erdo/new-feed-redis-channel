@@ -7,19 +7,6 @@ So it is as easy to give a feed URI and subscribe to Redis channel to implement 
 easy to use
 ======================
 
-getting feeds via redis-cli by subscribing to channel:
-
-(Using Jedis (java Redis client) new feeds can be received by any java application)
-
-```shell
-$ redis-cli
-redis 127.0.0.1:6379>
-redis 127.0.0.1:6379> SUBSCRIBE feed_crawler:feed_channel
-
-# new feeds will appear here when received as simple text
-
-```
-
 getting feeds via callback object:
 
 ```java
@@ -34,6 +21,7 @@ feedCrawlerService.setNewFeedItemEventListener(new NewFeedItemEventListener()
 {
     /** 
     * This method will be called every time a new feed is fetched.
+    * (Same feed can be received by redis channel at the same time)
     */
     public void onNewFeedItem(FeedItem feedItem)
     {
@@ -46,4 +34,15 @@ feedCrawlerService.start();
 
 ```
 
+getting feeds via redis-cli by subscribing to channel:
 
+(Using Jedis (java Redis client) new feeds can be received by any java application)
+
+```shell
+$ redis-cli
+redis 127.0.0.1:6379>
+redis 127.0.0.1:6379> SUBSCRIBE feed_crawler:feed_channel
+
+# new feeds will appear here when received as simple text
+
+```
