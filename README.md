@@ -1,8 +1,7 @@
 new-feed-redis-channel
 ======================
 
-A simple yet powerful feed crawler service that fethces feeds and uses Redis to store and later publishes feeds. 
-So it is as easy to give a feed URI and subscribe to Redis channel to implement push style feed notification.
+A simple yet powerful feed crawler service that fetches feeds and uses Redis to store and publish feeds. So it is as easy to give a feed URI and subscribe to Redis channel to create a -push- feed notification system.
 
 easy to use
 ======================
