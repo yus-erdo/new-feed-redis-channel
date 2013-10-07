@@ -1,10 +1,11 @@
-	package org.feedchannel;
+	package org.feedchannel.integration;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import org.feedchannel.FeedCrawlerService;
 import org.feedchannel.repository.FeedItem;
 import org.feedchannel.repository.FeedRepository;
 import org.feedchannel.repository.impl.FeedItemImpl;
