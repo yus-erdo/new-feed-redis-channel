@@ -4,7 +4,7 @@ package org.feedchannel.crawler;
 import java.util.Queue;
 
 import org.feedchannel.repository.FeedItem;
-import org.feedchannel.repository.FeedRepository;
+import org.feedchannel.repository.FeedSourceRepository;
 
 public interface FeedCrawler extends Runnable {
 	
@@ -14,6 +14,6 @@ public interface FeedCrawler extends Runnable {
 	
 	Queue<FeedItem> getFeedItemQueue();
 
-	void setFeedRepository(FeedRepository feedRepository);
+	void setFeedRepository(FeedSourceRepository feedRepository);
 
 }

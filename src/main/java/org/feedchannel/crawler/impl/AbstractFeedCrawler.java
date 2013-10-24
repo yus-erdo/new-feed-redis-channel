@@ -11,7 +11,7 @@ import org.feedchannel.RedisKeys;
 import org.feedchannel.crawler.FeedCrawler;
 import org.feedchannel.exception.CrawlerException;
 import org.feedchannel.repository.FeedItem;
-import org.feedchannel.repository.FeedRepository;
+import org.feedchannel.repository.FeedSourceRepository;
 import org.feedchannel.repository.impl.FeedItemImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,7 @@ public abstract class AbstractFeedCrawler implements FeedCrawler
 
 	private String feedUri;
 
-	protected FeedRepository feedRepository;
+	protected FeedSourceRepository feedRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -152,7 +152,7 @@ public abstract class AbstractFeedCrawler implements FeedCrawler
 	 * io.nabz.feedcrawler.crawler.FeedCrawler#setFeedRepository(io.nabz.feedcrawler
 	 * .repository.FeedRepository)
 	 */
-	public void setFeedRepository(FeedRepository feedRepository)
+	public void setFeedRepository(FeedSourceRepository feedRepository)
 	{
 		this.feedRepository = feedRepository;
 	}

@@ -6,7 +6,7 @@ import java.util.concurrent.ScheduledFuture;
 
 import org.feedchannel.crawler.FeedCrawler;
 import org.feedchannel.crawler.FeedCrawlerFactory;
-import org.feedchannel.repository.FeedRepository;
+import org.feedchannel.repository.FeedSourceRepository;
 import org.feedchannel.scheduling.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
@@ -21,7 +21,7 @@ public class SpringScheduling implements Scheduler
 	private TaskScheduler springTaskScheduler;
 
 	@Autowired
-	private FeedRepository feedRepository;
+	private FeedSourceRepository feedRepository;
 
 	@Autowired
 	private FeedCrawlerFactory feedCrawlerFactory;

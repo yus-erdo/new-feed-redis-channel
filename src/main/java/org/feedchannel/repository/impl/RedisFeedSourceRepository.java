@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.feedchannel.RedisKeys;
 import org.feedchannel.repository.FeedItem;
-import org.feedchannel.repository.FeedRepository;
+import org.feedchannel.repository.FeedSourceRepository;
 import org.feedchannel.repository.NewFeedItemEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +16,10 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 @Repository("feedRepository")
-public class RedisFeedRepository implements FeedRepository
+public class RedisFeedSourceRepository implements FeedSourceRepository
 {
 	private static final Logger log = LoggerFactory
-			.getLogger(RedisFeedRepository.class);
+			.getLogger(RedisFeedSourceRepository.class);
 
 	@Autowired
 	private JedisPool jedisPool;

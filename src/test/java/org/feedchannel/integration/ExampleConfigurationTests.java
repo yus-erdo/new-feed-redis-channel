@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.feedchannel.FeedCrawlerService;
 import org.feedchannel.repository.FeedItem;
-import org.feedchannel.repository.FeedRepository;
+import org.feedchannel.repository.FeedSourceRepository;
 import org.feedchannel.repository.impl.FeedItemImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +24,7 @@ public class ExampleConfigurationTests
 	private FeedCrawlerService feedCrawlerService;
 
 	@Autowired
-	private FeedRepository redisFeedRepository;
+	private FeedSourceRepository redisFeedRepository;
 
 	@Test
 	public void testWiring() throws Exception 

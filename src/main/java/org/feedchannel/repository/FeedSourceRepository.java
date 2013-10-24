@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface FeedRepository
+public interface FeedSourceRepository
 {
 	List<String> getAllFeedUris();
 	

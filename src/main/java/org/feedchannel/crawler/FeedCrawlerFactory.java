@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.feedchannel.RedisKeys;
 import org.feedchannel.crawler.impl.GenericFeedCrawler;
-import org.feedchannel.repository.FeedRepository;
+import org.feedchannel.repository.FeedSourceRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class FeedCrawlerFactory
 	private JedisPool jedisPool;
 	
 	@Autowired
-	private FeedRepository feedRepository;
+	private FeedSourceRepository feedRepository;
 
 	private Map<String, String> feedUriToClassMap = null;
 

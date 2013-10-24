@@ -1,7 +1,7 @@
 package org.feedchannel;
 
 import org.feedchannel.repository.FeedItem;
-import org.feedchannel.repository.FeedRepository;
+import org.feedchannel.repository.FeedSourceRepository;
 import org.feedchannel.repository.NewFeedItemEventListener;
 import org.feedchannel.scheduling.Scheduler;
 import org.slf4j.Logger;
@@ -12,7 +12,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
 
 /**
- * {@link FeedCrawlerTask} with hard-coded input data.
+ * {@link FeedCrawlerService} with hard-coded input data.
  */
 @Service
 public class FeedCrawlerService
@@ -21,7 +21,7 @@ public class FeedCrawlerService
 			.getLogger(FeedCrawlerService.class);
 
 	@Autowired
-	private FeedRepository feedRepository;
+	private FeedSourceRepository feedRepository;
 
 	@Autowired
 	private Scheduler scheduler;
